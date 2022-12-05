@@ -33,7 +33,7 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.asteroidRecycler.adapter = mainAdapter
-        viewModel.getdata()
+        viewModel.getdata(this.requireContext().applicationContext)
         viewModel.astroidLiveData.observe(viewLifecycleOwner, Observer { list ->
             mainAdapter.setData(list)
         })
