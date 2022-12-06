@@ -27,7 +27,7 @@ class MainViewModel : ViewModel() {
     val ImageLiveData: LiveData<PictureOfDay> = mutapleImage
     fun getdata(context: Context) {
 
-        AstroidService.retrofitService.getService(Constants.api_key, "2022-12-05", "2022-12-08")
+        AstroidService.retrofitService.getService(Constants.api_key)
             .enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>, response: Response<String>) {
                     val root = JSONObject(response.body())

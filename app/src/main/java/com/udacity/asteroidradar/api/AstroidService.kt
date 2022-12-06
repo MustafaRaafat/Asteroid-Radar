@@ -15,9 +15,7 @@ import retrofit2.http.Query
 interface AstroidServiceInterface {
     @GET("neo/rest/v1/feed")
     fun getService(
-        @Query("api_key") api_key: String,
-        @Query("start_date") start_date: String,
-        @Query("end_date") end_date: String
+        @Query("api_key") api_key: String
     ): Call<String>
 
 }

@@ -2,6 +2,7 @@ package com.udacity.asteroidradar.main
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.navigation.findNavController
@@ -20,11 +21,9 @@ class MainRecycler : RecyclerView.Adapter<MainRecycler.ViewHolder>() {
 
     class ViewHolder private constructor(val binding: MainItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        val title: TextView
         val card: CardView
 
         init {
-            title = binding.itemTitle
             card = binding.cardView
         }
 
@@ -37,7 +36,7 @@ class MainRecycler : RecyclerView.Adapter<MainRecycler.ViewHolder>() {
         }
 
         fun bind(item: Asteroid) {
-            title.text = item.codename
+            binding.asteroid=item
             card.setOnClickListener {
                 val a = MainFragmentDirections.actionShowDetail(item)
                 card.findNavController().navigate(a)
