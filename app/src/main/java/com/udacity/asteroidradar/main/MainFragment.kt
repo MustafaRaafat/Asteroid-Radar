@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.squareup.picasso.Picasso
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
 
@@ -21,9 +22,6 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false)
-        binding.lifecycleOwner = this
-
-        binding.viewModel = viewModel
 
         setHasOptionsMenu(true)
 
@@ -36,6 +34,9 @@ class MainFragment : Fragment() {
         viewModel.getdata(this.requireContext().applicationContext)
         viewModel.astroidLiveData.observe(viewLifecycleOwner, Observer { list ->
             mainAdapter.setData(list)
+        })
+        viewModel.ImageLiveData.observe(viewLifecycleOwner, Observer {
+            Picasso.with(context).load(it.url).into(binding.activityMainImageOfTheDay)
         })
     }
 

@@ -23,6 +23,9 @@
 <!--        <argument-->
 <!--            android:name="selectedAsteroid"-->
 <!--            app:argType="com.udacity.asteroidradar.Asteroid"/>-->
+        <argument
+            android:name="asteroid"
+            app:argType="com.udacity.asteroidradar.Asteroid" />
     </fragment>
 
 </navigation>

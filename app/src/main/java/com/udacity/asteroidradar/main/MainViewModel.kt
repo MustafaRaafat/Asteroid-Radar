@@ -9,7 +9,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants
+import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.api.AstroidService
+import com.udacity.asteroidradar.api.ImageOfTheDayService
 import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
 import com.udacity.asteroidradar.room.getDatabase
 import kotlinx.coroutines.launch
@@ -20,7 +22,9 @@ import retrofit2.Response
 
 class MainViewModel : ViewModel() {
     val mutapleList = MutableLiveData<List<Asteroid>>()
-    val astroidLiveData: MutableLiveData<List<Asteroid>>  = mutapleList
+    val mutapleImage = MutableLiveData<PictureOfDay>()
+    val astroidLiveData: MutableLiveData<List<Asteroid>> = mutapleList
+    val ImageLiveData: LiveData<PictureOfDay> = mutapleImage
     fun getdata(context: Context) {
 
         AstroidService.retrofitService.getService(Constants.api_key, "2022-12-05", "2022-12-08")
@@ -42,7 +46,8 @@ class MainViewModel : ViewModel() {
                 }
             })
         viewModelScope.launch {
-            astroidLiveData.postValue(getDatabase(context).dao.getAstroidFromDB())
+            mutapleList.postValue(getDatabase(context).dao.getAstroidFromDB())
+            mutapleImage.postValue(ImageOfTheDayService.retrofit2service.getImage(Constants.api_key))
         }
     }
 }

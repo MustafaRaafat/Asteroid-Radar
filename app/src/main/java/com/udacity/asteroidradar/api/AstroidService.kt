@@ -4,6 +4,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants
+import com.udacity.asteroidradar.PictureOfDay
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -33,5 +34,21 @@ private val retrofit = Retrofit.Builder()
 object AstroidService {
     val retrofitService: AstroidServiceInterface by lazy {
         retrofit.create(AstroidServiceInterface::class.java)
+    }
+}
+
+interface ImageOfTheDayInterface {
+    @GET("planetary/apod")
+    suspend fun getImage(@Query("api_key") api_key: String): PictureOfDay
+}
+
+private val retrofit2 = Retrofit.Builder()
+    .baseUrl(Constants.BASE_URL)
+    .addConverterFactory(MoshiConverterFactory.create(moshi))
+    .build()
+
+object ImageOfTheDayService {
+    val retrofit2service: ImageOfTheDayInterface by lazy {
+        retrofit2.create(ImageOfTheDayInterface::class.java)
     }
 }
