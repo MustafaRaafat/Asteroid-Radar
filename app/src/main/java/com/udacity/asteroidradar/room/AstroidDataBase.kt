@@ -1,6 +1,7 @@
 package com.udacity.asteroidradar.room
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Insert
@@ -8,15 +9,15 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.udacity.asteroidradar.Asteroid
+import com.udacity.asteroidradar.model.Asteroid
 
 @Dao
 interface AstroidDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAstroid(vararg asteroid: Asteroid)
+    suspend fun insertAstroid(asteroid: Asteroid)
 
     @Query("SELECT * FROM asteroid")
-    suspend fun getAstroidFromDB(): List<Asteroid>
+    fun getAstroidFromDB(): LiveData<List<Asteroid>>
 }
 
 @Database(entities = [Asteroid::class], version = 1)

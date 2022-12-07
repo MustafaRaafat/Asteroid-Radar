@@ -1,19 +1,16 @@
-package com.udacity.asteroidradar.main
+package com.udacity.asteroidradar.ui.main
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.udacity.asteroidradar.Asteroid
-import com.udacity.asteroidradar.R
+import com.udacity.asteroidradar.model.Asteroid
 import com.udacity.asteroidradar.databinding.MainItemBinding
 
 class MainRecycler : RecyclerView.Adapter<MainRecycler.ViewHolder>() {
 
-    private var data = listOf<Asteroid>()
+    private var data: List<Asteroid> = emptyList()
     fun setData(data: List<Asteroid>) {
         this.data = data
         notifyDataSetChanged()
@@ -36,7 +33,7 @@ class MainRecycler : RecyclerView.Adapter<MainRecycler.ViewHolder>() {
         }
 
         fun bind(item: Asteroid) {
-            binding.asteroid=item
+            binding.asteroid = item
             card.setOnClickListener {
                 val a = MainFragmentDirections.actionShowDetail(item)
                 card.findNavController().navigate(a)

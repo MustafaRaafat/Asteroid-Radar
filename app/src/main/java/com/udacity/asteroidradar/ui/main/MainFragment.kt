@@ -1,4 +1,4 @@
-package com.udacity.asteroidradar.main
+package com.udacity.asteroidradar.ui.main
 
 import android.os.Bundle
 import android.view.*
@@ -15,7 +15,14 @@ class MainFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
     private var mainAdapter = MainRecycler()
 
-    private val viewModel: MainViewModel by activityViewModels()
+    private val viewModel: MainViewModel by lazy {
+//        val activity = requireNotNull(this.activity) {
+//        }
+        ViewModelProvider(
+            this
+//            MainViewModel.Factory(activity.application)
+        ).get(MainViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,12 +38,25 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.asteroidRecycler.adapter = mainAdapter
-        viewModel.getdata(this.requireContext().applicationContext)
-        viewModel.astroidLiveData.observe(viewLifecycleOwner, Observer { list ->
-            mainAdapter.setData(list)
-        })
-        viewModel.ImageLiveData.observe(viewLifecycleOwner, Observer {
-            Picasso.with(context).load(it.url).into(binding.activityMainImageOfTheDay)
+//        viewModel.astroidData.observe(viewLifecycleOwner,Observer{astroid->
+//            astroid?.apply {
+//                mainAdapter?.setData(astroid)
+//            }
+//
+//        })
+//        viewModel.getdata(this.requireContext().applicationContext)
+//        viewModel.astroidLiveData.observe(viewLifecycleOwner, Observer { list ->
+//            mainAdapter.setData(list)
+//        })
+//        viewModel.ImageLiveData.observe(viewLifecycleOwner, Observer {
+//            Picasso.with(context).load(it.url).into(binding.activityMainImageOfTheDay)
+//        })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.astroidData.observe(viewLifecycleOwner,Observer{
+            mainAdapter.setData(it)
         })
     }
 
