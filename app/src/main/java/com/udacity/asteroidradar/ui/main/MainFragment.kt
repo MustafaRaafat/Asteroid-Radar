@@ -1,6 +1,7 @@
 package com.udacity.asteroidradar.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -16,12 +17,7 @@ class MainFragment : Fragment() {
     private var mainAdapter = MainRecycler()
 
     private val viewModel: MainViewModel by lazy {
-//        val activity = requireNotNull(this.activity) {
-//        }
-        ViewModelProvider(
-            this
-//            MainViewModel.Factory(activity.application)
-        ).get(MainViewModel::class.java)
+        ViewModelProvider(this).get(MainViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -38,16 +34,13 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.asteroidRecycler.adapter = mainAdapter
-//        viewModel.astroidData.observe(viewLifecycleOwner,Observer{astroid->
-//            astroid?.apply {
-//                mainAdapter?.setData(astroid)
-//            }
-//
-//        })
-//        viewModel.getdata(this.requireContext().applicationContext)
-//        viewModel.astroidLiveData.observe(viewLifecycleOwner, Observer { list ->
-//            mainAdapter.setData(list)
-//        })
+        viewModel.astroidData.observe(viewLifecycleOwner, Observer {
+            mainAdapter.setData(it)
+        })
+        viewModel.getImageOfTheDay().observe(viewLifecycleOwner, Observer {
+            Picasso.with(context).load(it.url).into(binding.activityMainImageOfTheDay)
+            binding.activityMainImageOfTheDay.contentDescription = it.title
+        })
 //        viewModel.ImageLiveData.observe(viewLifecycleOwner, Observer {
 //            Picasso.with(context).load(it.url).into(binding.activityMainImageOfTheDay)
 //        })
@@ -55,9 +48,6 @@ class MainFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        viewModel.astroidData.observe(viewLifecycleOwner,Observer{
-            mainAdapter.setData(it)
-        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -66,6 +56,29 @@ class MainFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.show_week -> week()
+            R.id.show_today -> today()
+            R.id.show_offline -> offline()
+        }
         return true
+    }
+
+    private fun offline() {
+        viewModel.astroidData.observe(viewLifecycleOwner, Observer {
+            mainAdapter.setData(it)
+        })
+    }
+
+    private fun today() {
+        viewModel.getToday("2022-12-07").observe(viewLifecycleOwner, Observer {
+            mainAdapter.setData(it)
+        })
+    }
+
+    private fun week() {
+        viewModel.astroidData.observe(viewLifecycleOwner, Observer {
+            mainAdapter.setData(it)
+        })
     }
 }

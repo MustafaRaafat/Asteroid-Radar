@@ -26,7 +26,6 @@ class AsteroidRepo(private var database: AsteroidDb) {
             for (astroid in Ast){
                 database.dao.insertAstroid(astroid)
             }
-//            database.dao.insertAstroid(*Ast.toTypedArray())
         }
 
     }

@@ -19,6 +19,13 @@ interface AstroidServiceInterface {
         @Query("api_key") api_key: String
     ): String
 
+    @GET("neo/rest/v1/feed")
+    suspend fun getTodayService(
+        @Query("api_key") api_key: String,
+        @Query("")startDate:String,
+        @Query("")endDate:String
+    ): String
+
 }
 
 private val moshi = Moshi.Builder()

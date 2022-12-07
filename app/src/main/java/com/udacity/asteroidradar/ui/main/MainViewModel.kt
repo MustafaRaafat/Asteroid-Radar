@@ -2,6 +2,8 @@ package com.udacity.asteroidradar.ui.main
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.udacity.asteroidradar.AsteroidApplication
@@ -24,15 +26,19 @@ import retrofit2.await
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val database = getDatabase(application)
     private val repo = AsteroidRepo(database)
+
     init {
         refreshDataFromNetWork()
     }
 
 
-
     private fun refreshDataFromNetWork() {
         viewModelScope.launch {
-            repo.refreshData()
+            try {
+                repo.refreshData()
+            } catch (ex: Exception) {
+                Toast.makeText(getApplication(), "no internet", Toast.LENGTH_SHORT).show()
+            }
 //            mutapleImage.postValue(ImageOfTheDayService.retrofit2service.getImage(Constants.api_key))
 //            val astroidList = parseAsteroidsJsonResult(
 //                JSONObject(
@@ -45,34 +51,41 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     val astroidData = repo.asteroidRebo
 
-    //    private val mutapleList = MutableLiveData<List<Asteroid>>()
-//    val mutapleImage = MutableLiveData<PictureOfDay>()
-//    val astroidLiveData: MutableLiveData<List<Asteroid>> = mutapleList
-//    val ImageLiveData: LiveData<PictureOfDay> = mutapleImage
-//    fun getdata(context: Context) {
-//
-//        viewModelScope.launch {
-//            val Astroid = parseAsteroidsJsonResult(
-//                JSONObject(
-//                    AstroidService.retrofitService.getService(Constants.api_key).await()
-//                )
-//            )
-//            for (asteroid in Astroid) {
-//                getDatabase(context).dao.insertAstroid(asteroid)
-//            }
-//        }
-//        viewModelScope.launch {
-////            mutapleList.postValue(getDatabase(context).dao.getAstroidFromDB().value)
-//
-//        }
-//    }
-    class Factory(val app: Application) : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
-                return MainViewModel(app) as T
+    private val todayMuta = MutableLiveData<List<Asteroid>>()
+    fun getToday(today: String): LiveData<List<Asteroid>> {
+        viewModelScope.launch {
+            try {
+                val Astroid = parseAsteroidsJsonResult(
+                    JSONObject(
+                        AstroidService.retrofitService.getTodayService(
+                            Constants.api_key,
+                            today,
+                            today
+                        )
+                    )
+                )
+                todayMuta.value = Astroid
+            } catch (ex: Exception) {
+                Toast.makeText(getApplication(), "no internet", Toast.LENGTH_SHORT).show()
             }
-            throw IllegalArgumentException("faild")
         }
+        return todayMuta
+    }
+
+    private val mutapleImage = MutableLiveData<PictureOfDay>()
+
+    //    val astroidLiveData: MutableLiveData<List<Asteroid>> = mutapleList
+//    val ImageLiveData: LiveData<PictureOfDay> = mutapleImage
+    fun getImageOfTheDay(): LiveData<PictureOfDay> {
+        viewModelScope.launch {
+            try {
+                mutapleImage.value =
+                    ImageOfTheDayService.retrofit2service.getImage(Constants.api_key)
+
+            } catch (ex: Exception) {
+                Toast.makeText(getApplication(), "no Internet", Toast.LENGTH_SHORT)
+            }
+        }
+        return mutapleImage
     }
 }
